@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Академия чемпионов</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --bg2: #1a1d27;
+  --bg3: #242838;
+  --card: #1e2235;
+  --border: #2d3250;
+  --accent: #4ade80;
+  --accent2: #22c55e;
+  --gold: #f59e0b;
+  --blue: #60a5fa;
+  --orange: #fb923c;
+  --red: #f87171;
+  --purple: #a78bfa;
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --sport: #4ade80;
+  --study: #60a5fa;
+  --art: #a78bfa;
+  --health: #f87171;
+  --home: #fb923c;
+  --read: #f59e0b;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f0f4ff;
+    --bg2: #e8edf8;
+    --bg3: #dde4f4;
+    --card: #ffffff;
+    --border: #c7d0e8;
+    --text: #1e2235;
+    --text2: #4a5568;
+    --text3: #9ca3af;
+    --shadow: 0 4px 24px rgba(0,0,0,0.1);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+/* ── HEADER ── */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-logo { font-size: 22px; }
+.header-title { font-size: 16px; font-weight: 700; flex: 1; }
+.header-title small { display: block; font-size: 11px; font-weight: 400; color: var(--text2); }
+.badge-parent {
+  background: var(--gold);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.btn-icon {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background .15s;
+}
+.btn-icon:hover { background: var(--border); }
+/* ── PROFILE SWITCHER ── */
+.profile-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.profile-bar::-webkit-scrollbar { display: none; }
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.profile-chip.active {
+  border-color: var(--accent);
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--accent);
+}
+.profile-chip .avatar { font-size: 18px; }
+.profile-chip.add-chip {
+  border-style: dashed;
+  color: var(--text2);
+}
+/* ── TABS ── */
+.tab-bar {
+  display: flex;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  flex: 1;
+  padding: 11px 4px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  border-bottom: 2px solid transparent;
+  transition: all .15s;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+/* ── CONTENT ── */
+.content { padding: 16px; padding-bottom: 20px; }
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 12px;
+}
+/* ── HERO STATS ── */
+.hero-card {
+  background: linear-gradient(135deg, #1a2740 0%, #0d1f35 100%);
+  border: 1px solid #2d4a6b;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before {
+  content: '⚽';
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  font-size: 80px;
+  opacity: 0.08;
+  transform: rotate(-15deg);
+}
+.hero-name { font-size: 20px; font-weight: 800; }
+.hero-level { font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 2px; }
+.hero-pts {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 10px 0 6px;
+}
+.hero-pts-num { font-size: 36px; font-weight: 900; color: var(--accent); }
+.hero-pts-label { font-size: 13px; color: var(--text2); }
+.level-bar-wrap { margin-top: 8px; }
+.level-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+.bar-track {
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  transition: width .4s ease;
+}
+/* ── METRICS ROW ── */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.metric-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 8px;
+  text-align: center;
+}
+.metric-num { font-size: 22px; font-weight: 800; }
+.metric-label { font-size: 10px; color: var(--text2); margin-top: 2px; }
+/* ── TASK ITEM ── */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.task-item:last-child { border-bottom: none; }
+.task-cat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.task-info { flex: 1; min-width: 0; }
+.task-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.task-pts {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.task-status {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.status-pending { background: rgba(251,146,60,.15); color: var(--orange); }
+.status-confirmed { background: rgba(74,222,128,.15); color: var(--accent); }
+.btn-check {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.btn-check:hover { border-color: var(--accent); background: rgba(74,222,128,.1); }
+.btn-check.done { border-color: var(--accent); background: var(--accent); color: #000; }
+.btn-check.confirmed { border-color: var(--accent2); background: var(--accent2); color: #000; cursor: default; }
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-primary { background: var(--accent); color: #000; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--border); }
+.btn-danger { background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.3); }
+.btn-danger:hover { background: rgba(248,113,113,.25); }
+.btn-gold { background: var(--gold); color: #000; }
+.btn-gold:hover { background: #d97706; }
+.btn-sm { padding: 6px 10px; font-size: 12px; }
+.btn-block { width: 100%; justify-content: center; }
+/* ── CATEGORY PILLS ── */
+.cat-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.cat-pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all .15s;
+  opacity: .7;
+}
+.cat-pill.active { opacity: 1; border-color: currentColor; }
+/* ── FORM ── */
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: .5px; }
+.form-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .15s;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+.pts-options {
+  display: flex;
+  gap: 6px;
+}
+.pts-opt {
+  flex: 1;
+  padding: 8px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+.pts-opt.selected { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,.1); }
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px 30px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.modal-title { font-size: 18px; font-weight: 800; }
+.modal-close {
+  background: var(--bg3);
+  border: none;
+  color: var(--text2);
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* ── PIN ── */
+.pin-display {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+}
+.pin-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  transition: all .15s;
+}
+.pin-dot.filled { background: var(--gold); border-color: var(--gold); }
+.pin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.pin-key {
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+.pin-key:hover { background: var(--border); }
+.pin-key:active { transform: scale(.95); }
+/* ── WEEK GRID ── */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.day-cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+}
+.day-cell:hover { border-color: var(--blue); }
+.day-cell.today { border-color: var(--blue); }
+.day-cell.has-tasks { background: rgba(96,165,250,.1); }
+.day-cell.confirmed { background: rgba(74,222,128,.15); border-color: var(--accent); }
+.day-cell.pending { border-color: var(--orange); }
+.day-label { font-size: 9px; color: var(--text2); font-weight: 700; text-transform: uppercase; }
+.day-num { font-size: 14px; font-weight: 800; }
+.day-indicator { font-size: 10px; margin-top: 1px; }
+/* ── PROGRESS CHART (SVG) ── */
+.chart-wrap { width: 100%; overflow: hidden; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+/* ── CATEGORY PROGRESS ── */
+.cat-progress-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.cat-icon { font-size: 18px; width: 28px; text-align: center; }
+.cat-name { font-size: 12px; font-weight: 600; width: 70px; color: var(--text2); }
+.cat-bar-wrap { flex: 1; }
+.cat-bar-track { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.cat-pts { font-size: 12px; font-weight: 700; width: 36px; text-align: right; }
+/* ── LEVELS ── */
+.level-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.level-card:last-child { border-bottom: none; }
+.level-icon { font-size: 28px; width: 36px; text-align: center; }
+.level-info { flex: 1; }
+.level-name { font-size: 14px; font-weight: 700; }
+.level-req { font-size: 11px; color: var(--text2); }
+.level-check { font-size: 18px; }
+/* ── BADGES ── */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  text-align: center;
+}
+.badge-item.locked { opacity: .4; filter: grayscale(1); }
+.badge-icon { font-size: 24px; }
+.badge-name { font-size: 9px; color: var(--text2); font-weight: 600; line-height: 1.2; }
+/* ── PRIZE ── */
+.prize-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.prize-item:last-child { border-bottom: none; }
+.prize-info { flex: 1; }
+.prize-name { font-size: 14px; font-weight: 700; }
+.prize-pts { font-size: 12px; color: var(--text2); }
+.prize-status { font-size: 11px; font-weight: 700; }
+.status-avail { color: var(--accent); }
+.status-not { color: var(--text3); }
+/* ── PARENT OVERVIEW ── */
+.child-overview-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.child-overview-card:hover { border-color: var(--accent); }
+.child-ov-avatar { font-size: 36px; }
+.child-ov-info { flex: 1; }
+.child-ov-name { font-size: 16px; font-weight: 800; }
+.child-ov-level { font-size: 11px; color: var(--gold); }
+.child-ov-stats { display: flex; gap: 12px; margin-top: 4px; }
+.child-ov-stat { font-size: 11px; color: var(--text2); }
+.child-ov-stat strong { color: var(--text); }
+.pending-badge {
+  background: var(--orange);
+  color: #000;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text2);
+}
+.empty-icon { font-size: 48px; margin-bottom: 8px; }
+.empty-text { font-size: 14px; }
+/* ── TREND CARD ── */
+.trend-card {
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trend-up { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.3); }
+.trend-down { background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3); }
+.trend-same { background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.3); }
+.trend-icon { font-size: 28px; }
+.trend-text { font-size: 13px; font-weight: 600; }
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 200;
+  box-shadow: var(--shadow);
+  animation: toastIn .25s ease;
+  white-space: nowrap;
+}
+@keyframes toastIn {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+/* ── EMOJI PICKER ── */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.emoji-opt {
+  font-size: 28px;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all .1s;
+}
+.emoji-opt:hover { background: var(--bg3); }
+.emoji-opt.selected { border-color: var(--accent); background: rgba(74,222,128,.1); }
+/* ── CONFIRM DAY MODAL ── */
+.confirm-task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.confirm-task-item:last-child { border-bottom: none; }
+/* misc */
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+.text-muted { color: var(--text2); }
+.text-accent { color: var(--accent); }
+.text-gold { color: var(--gold); }
+.text-orange { color: var(--orange); }
+.fw-bold { font-weight: 700; }
+.flex-row { display: flex; gap: 8px; }
+.mt-8 { margin-top: 8px; }
+.mb-8 { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA LAYER
+// ═══════════════════════════════════════════════════
+
+const STORAGE_KEY = 'champions_academy_v1';
+
+const LEVELS = [
+  { name: 'Новичок', icon: '🌱', min: 0, max: 49 },
+  { name: 'Игрок команды', icon: '👟', min: 50, max: 149 },
+  { name: 'Капитан', icon: '🎖️', min: 150, max: 299 },
+  { name: 'Звезда лиги', icon: '⭐', min: 300, max: 499 },
+  { name: 'Чемпион', icon: '🏆', min: 500, max: 799 },
+  { name: 'Легенда', icon: '👑', min: 800, max: Infinity },
+];
+
+const CATEGORIES = {
+  sport:  { label: 'Спорт',     icon: '⚽', color: 'var(--sport)' },
+  study:  { label: 'Учёба',     icon: '📚', color: 'var(--study)' },
+  art:    { label: 'Творчество', icon: '🎨', color: 'var(--art)' },
+  health: { label: 'Здоровье',  icon: '💪', color: 'var(--health)' },
+  home:   { label: 'Дом',       icon: '🏠', color: 'var(--home)' },
+  read:   { label: 'Чтение',    icon: '📖', color: 'var(--read)' },
+};
+
+const BADGE_DEFS = [
+  { id: 'first_task',   icon: '🎯', name: 'Первый шаг',   check: (c) => totalConfirmed(c) >= 1 },
+  { id: 'sport_5',      icon: '⚽', name: '5 тренировок', check: (c) => confirmedBycat(c,'sport') >= 5 },
+  { id: 'pts_100',      icon: '💯', name: '100 очков',    check: (c) => totalPts(c) >= 100 },
+  { id: 'pts_500',      icon: '🏆', name: '500 очков',    check: (c) => totalPts(c) >= 500 },
+  { id: 'read_5',       icon: '📖', name: '5 читок',      check: (c) => confirmedBycat(c,'read') >= 5 },
+  { id: 'tasks_10',     icon: '🔥', name: '10 заданий',   check: (c) => totalConfirmed(c) >= 10 },
+  { id: 'study_5',      icon: '📚', name: '5 уроков',     check: (c) => confirmedBycat(c,'study') >= 5 },
+  { id: 'legend',       icon: '👑', name: 'Легенда',      check: (c) => totalPts(c) >= 800 },
+];
+
+const AVATARS = ['⚽','🏆','🎯','👟','🥇','🦁','🐯','🦅','🚀','⭐','🔥','💎','🏅','🎖️','👑','🦸'];
+
+const DEFAULT_STATE = {
+  parentMode: false,
+  parentPin: '1234',
+  activeChild: 0,
+  children: [
+    {
+      id: 1,
+      name: 'Алибек',
+      avatar: '⚽',
+      tasks: [],
+      confirmedDays: {},
+      weekPts: [0,0,0,0,0,0,0],
+      individualPrizes: [],
+    }
+  ],
+  sharedPrizes: [
+    { id: 1, pts: 100, name: 'Кино с семьёй' },
+    { id: 2, pts: 200, name: 'Поход в боулинг' },
+    { id: 3, pts: 500, name: 'Новая форма' },
+  ]
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+
+function activeChild() {
+  return state.children[state.activeChild] || state.children[0];
+}
+
+function totalPts(child) {
+  return (child.weekPts || []).reduce((a,b) => a+b, 0);
+}
+
+function totalConfirmed(child) {
+  return (child.tasks || []).filter(t => t.confirmed).length;
+}
+
+function confirmedBycat(child, cat) {
+  return (child.tasks || []).filter(t => t.confirmed && t.cat === cat).length;
+}
+
+function getLevel(pts) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (pts >= LEVELS[i].min) return i;
+  }
+  return 0;
+}
+
+function getLevelProgress(pts) {
+  const idx = getLevel(pts);
+  const lv = LEVELS[idx];
+  if (idx === LEVELS.length - 1) return 100;
+  const range = lv.max - lv.min + 1;
+  const progress = pts - lv.min;
+  return Math.min(100, Math.round((progress / range) * 100));
+}
+
+const DAY_NAMES = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+function getTodayIdx() {
+  const d = new Date().getDay();
+  return d === 0 ? 6 : d - 1; // 0=Mon..6=Sun
+}
+
+function todayKey() {
+  const t = getTodayIdx();
+  return `w-${t}`;
+}
+
+function pendingCount(child) {
+  return (child.tasks || []).filter(t => t.markedDone && !t.confirmed).length;
+}
+
+function formatPts(n) { return `+${n} ⚡`; }
+
+function newId() { return Date.now() + Math.floor(Math.random()*1000); }
+
+function catColor(cat) { return CATEGORIES[cat]?.color || 'var(--text2)'; }
+function catIcon(cat) { return CATEGORIES[cat]?.icon || '•'; }
+function catLabel(cat) { return CATEGORIES[cat]?.label || cat; }
+
+// ═══════════════════════════════════════════════════
+// UI STATE
+// ═══════════════════════════════════════════════════
+
+let ui = {
+  tab: 'today',       // today | progress | rewards | parent
+  modal: null,        // null | 'pin' | 'add-task' | 'day-detail' | 'add-prize' | 'add-child' | 'add-child-form'
+  filterCat: 'all',
+  editingPrizeType: 'shared',
+  selectedDay: null,
+  pinInput: '',
+  pinError: false,
+  addTaskForm: { title:'', cat:'sport', pts:10, repeat:'daily' },
+  addPrizeForm: { name:'', pts:100, type:'points', childId:null },
+  addChildForm: { name:'', avatar:'⚽' },
+  parentView: 'overview', // overview | child
+};
+
+// ═══════════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════════
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = buildApp();
+  bindEvents();
+}
+
+function buildApp() {
+  const child = activeChild();
+  const pts = totalPts(child);
+  const lvIdx = getLevel(pts);
+  const lv = LEVELS[lvIdx];
+
+  let body = '';
+
+  if (ui.tab === 'parent') {
+    body = buildParentView();
+  } else {
+    body = buildChildView(child, pts, lv, lvIdx);
+  }
+
+  const modal = buildModal();
+
+  return `
+    ${buildHeader(child, lv, lvIdx)}
+    ${buildProfileBar()}
+    ${buildTabBar()}
+    <div class="content">${body}</div>
+    ${modal}
+  `;
+}
+
+// ── HEADER ──
+function buildHeader(child, lv, lvIdx) {
+  const parentBadge = state.parentMode
+    ? `<span class="badge-parent">👨‍💼 Режим родителя</span>` : '';
+  return `
+    <div class="header">
+      <span class="header-logo">🏆</span>
+      <div class="header-title">
+        Академия чемпионов
+        <small>${lv.icon} ${lv.name}</small>
+      </div>
+      ${parentBadge}
+      <button class="btn-icon" onclick="openPin()" title="Родительский режим">⚙️</button>
+    </div>
+  `;
+}
+
+// ── PROFILE BAR ──
+function buildProfileBar() {
+  const chips = state.children.map((c,i) => `
+    <div class="profile-chip ${i === state.activeChild ? 'active' : ''}" onclick="switchChild(${i})">
+      <span class="avatar">${c.avatar}</span>
+      <span>${c.name}</span>
+    </div>
+  `).join('');
+  const addBtn = state.parentMode
+    ? `<div class="profile-chip add-chip" onclick="openAddChild()">➕ Добавить</div>` : '';
+  return `<div class="profile-bar">${chips}${addBtn}</div>`;
+}
+
+// ── TAB BAR ──
+function buildTabBar() {
+  if (state.parentMode && ui.tab === 'parent') {
+    return `
+      <div class="tab-bar">
+        <div class="tab ${ui.tab==='today'?'active':''}" onclick="setTab('today')">📋 Сегодня</div>
+        <div class="tab ${ui.tab==='progress'?'active':''}" onclick="setTab('progress')">📈 Прогресс</div>
+        <div class="tab ${ui.tab==='rewards'?'active':''}" onclick="setTab('rewards')">🎁 Награды</div>
+        <div class="tab active">👨‍💼 Управление</div>
+      </div>
+    `;
+  }
+  const parentTab = state.parentMode
+    ? `<div class="tab ${ui.tab==='parent'?'active':''}" onclick="setTab('parent')">👨‍💼 Управление</div>` : '';
+  return `
+    <div class="tab-bar">
+      <div class="tab ${ui.tab==='today'?'active':''}" onclick="setTab('today')">📋 Сегодня</div>
+      <div class="tab ${ui.tab==='progress'?'active':''}" onclick="setTab('progress')">📈 Прогресс</div>
+      <div class="tab ${ui.tab==='rewards'?'active':''}" onclick="setTab('rewards')">🎁 Награды</div>
+      ${parentTab}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// CHILD VIEWS
+// ═══════════════════════════════════════════════════
+
+function buildChildView(child, pts, lv, lvIdx) {
+  if (ui.tab === 'today') return buildToday(child, pts, lv, lvIdx);
+  if (ui.tab === 'progress') return buildProgress(child, pts);
+  if (ui.tab === 'rewards') return buildRewards(child, pts);
+  return buildToday(child, pts, lv, lvIdx);
+}
+
+// ── TODAY ──
+function buildToday(child, pts, lv, lvIdx) {
+  const lvProgress = getLevelProgress(pts);
+  const nextLv = LEVELS[Math.min(lvIdx+1, LEVELS.length-1)];
+  const todayIdx = getTodayIdx();
+  const todayTasks = (child.tasks||[]).filter(t => t.weekDay === todayIdx);
+  const confirmed = todayTasks.filter(t=>t.confirmed).length;
+  const pending = todayTasks.filter(t=>t.markedDone && !t.confirmed).length;
+  const total = todayTasks.length;
+
+  const metricsRow = `
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-num text-accent">${confirmed}</div>
+        <div class="metric-label">Выполнено ✅</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">${total}</div>
+        <div class="metric-label">Заданий 📋</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num text-orange">${pending}</div>
+        <div class="metric-label">Ждут ⏳</div>
+      </div>
+    </div>
+  `;
+
+  const heroCard = `
+    <div class="hero-card">
+      <div class="hero-name">${child.avatar} ${child.name}</div>
+      <div class="hero-level">${lv.icon} ${lv.name}</div>
+      <div class="hero-pts">
+        <span class="hero-pts-num">${pts}</span>
+        <span class="hero-pts-label">очков</span>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-bar-label">
+          <span>До уровня: ${nextLv.name} ${nextLv.icon}</span>
+          <span>${lvProgress}%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${lvProgress}%"></div></div>
+      </div>
+    </div>
+  `;
+
+  // Week grid
+  const weekGrid = buildWeekGrid(child);
+
+  // Today tasks list
+  let taskList = '';
+  if (todayTasks.length === 0) {
+    taskList = `<div class="empty"><div class="empty-icon">🗓️</div><div class="empty-text">Нет заданий на сегодня</div></div>`;
+  } else {
+    taskList = todayTasks.map(t => buildTaskRow(t, false)).join('');
+  }
+
+  const addBtn = `
+    <button class="btn btn-primary btn-block mt-8" onclick="openAddTask()">
+      ➕ Добавить задание
+    </button>
+  `;
+
+  return heroCard + metricsRow + `
+    <div class="card">
+      <div class="card-title">🗓️ Неделя</div>
+      ${weekGrid}
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Задания — ${DAY_NAMES[todayIdx]}</div>
+      ${taskList}
+    </div>
+    ${addBtn}
+  `;
+}
+
+function buildWeekGrid(child) {
+  const todayIdx = getTodayIdx();
+  const cells = DAY_NAMES.map((name, i) => {
+    const key = `w-${i}`;
+    const dayTasks = (child.tasks||[]).filter(t => t.weekDay === i);
+    const hasTasks = dayTasks.length > 0;
+    const confirmed = child.confirmedDays[key];
+    const hasPending = dayTasks.some(t => t.markedDone && !t.confirmed);
+    let cls = 'day-cell';
+    if (i === todayIdx) cls += ' today';
+    if (confirmed) cls += ' confirmed';
+    else if (hasPending) cls += ' pending';
+    else if (hasTasks) cls += ' has-tasks';
+    let indicator = '';
+    if (confirmed) indicator = '✅';
+    else if (hasPending) indicator = '❗';
+    else if (hasTasks) indicator = '•';
+    return `
+      <div class="${cls}" onclick="openDayDetail(${i})">
+        <div class="day-label">${name}</div>
+        <div class="day-num">${i+1}</div>
+        <div class="day-indicator">${indicator}</div>
+      </div>
+    `;
+  }).join('');
+  return `<div class="week-grid">${cells}</div>`;
+}
+
+function buildTaskRow(task, parentView) {
+  const dot = `<div class="task-cat-dot" style="background:${catColor(task.cat)}"></div>`;
+  const icon = catIcon(task.cat);
+  let statusEl = '';
+  let checkEl = '';
+  if (task.confirmed) {
+    checkEl = `<button class="btn-check confirmed" disabled>✓</button>`;
+    statusEl = `<span class="task-status status-confirmed">✅ Засчитано</span>`;
+  } else if (task.markedDone) {
+    checkEl = `<button class="btn-check done" disabled>✓</button>`;
+    statusEl = `<span class="task-status status-pending">⏳ Ждёт</span>`;
+  } else {
+    checkEl = `<button class="btn-check" onclick="markDone(${task.id})">○</button>`;
+  }
+  const deleteBtn = parentView
+    ? `<button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})">🗑️</button>` : '';
+  return `
+    <div class="task-item">
+      ${dot}
+      <div class="task-info">
+        <div class="task-title">${task.title}</div>
+        <div class="task-meta">${icon} ${catLabel(task.cat)} · ${task.repeat === 'daily' ? '🔄 каждый день' : task.repeat === 'weekly' ? '📅 еженедельно' : '1️⃣ разово'}</div>
+      </div>
+      ${statusEl}
+      <div class="task-pts">${task.pts}⚡</div>
+      ${parentView ? deleteBtn : checkEl}
+    </div>
+  `;
+}
+
+// ── PROGRESS ──
+function buildProgress(child, pts) {
+  const weekPts = child.weekPts || [0,0,0,0,0,0,0];
+  const lastWeekPts = child.lastWeekPts || [0,0,0,0,0,0,0];
+  const thisTotal = weekPts.reduce((a,b)=>a+b,0);
+  const lastTotal = lastWeekPts.reduce((a,b)=>a+b,0);
+
+  // Category stats
+  const catStats = {};
+  Object.keys(CATEGORIES).forEach(k => { catStats[k] = 0; });
+  (child.tasks||[]).filter(t=>t.confirmed).forEach(t => {
+    catStats[t.cat] = (catStats[t.cat]||0) + t.pts;
+  });
+  const maxCatPts = Math.max(1, ...Object.values(catStats));
+
+  const catRows = Object.entries(CATEGORIES).map(([k,v]) => {
+    const p = Math.round((catStats[k]/maxCatPts)*100);
+    return `
+      <div class="cat-progress-item">
+        <div class="cat-icon">${v.icon}</div>
+        <div class="cat-name">${v.label}</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar-track">
+            <div class="bar-fill" style="width:${p}%;background:${v.color}"></div>
+          </div>
+        </div>
+        <div class="cat-pts" style="color:${v.color}">${catStats[k]}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Trend
+  let trendHtml = '';
+  if (thisTotal > lastTotal) {
+    trendHtml = `<div class="trend-card trend-up"><div class="trend-icon">📈</div><div><div class="fw-bold text-accent">Отличный прогресс!</div><div class="trend-text">На ${thisTotal-lastTotal} очков больше, чем на прошлой неделе</div></div></div>`;
+  } else if (thisTotal < lastTotal && lastTotal > 0) {
+    trendHtml = `<div class="trend-card trend-down"><div class="trend-icon">📉</div><div><div class="fw-bold" style="color:var(--red)">Можно лучше!</div><div class="trend-text">На ${lastTotal-thisTotal} очков меньше, чем на прошлой неделе</div></div></div>`;
+  } else {
+    trendHtml = `<div class="trend-card trend-same"><div class="trend-icon">➡️</div><div><div class="fw-bold text-muted">Стабильно</div><div class="trend-text">Такой же результат, как на прошлой неделе</div></div></div>`;
+  }
+
+  // Metrics
+  const allTasks = child.tasks || [];
+  const confirmedCount = allTasks.filter(t=>t.confirmed).length;
+  const pendingCount2 = allTasks.filter(t=>t.markedDone && !t.confirmed).length;
+
+  const metricsRow = `
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-num text-accent">${confirmedCount}</div>
+        <div class="metric-label">Выполнено</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num text-gold">${pts}</div>
+        <div class="metric-label">Всего очков</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num text-orange">${pendingCount2}</div>
+        <div class="metric-label">Ждут ⏳</div>
+      </div>
+    </div>
+  `;
+
+  // Chart
+  const chartHtml = buildWeekChart(weekPts);
+
+  return metricsRow + `
+    <div class="card">
+      <div class="card-title">📊 Очки за неделю</div>
+      ${chartHtml}
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 Динамика</div>
+      ${trendHtml}
+    </div>
+    <div class="card">
+      <div class="card-title">📂 По категориям</div>
+      ${catRows}
+    </div>
+  `;
+}
+
+function buildWeekChart(weekPts) {
+  const max = Math.max(1, ...weekPts);
+  const w = 340, h = 120, pad = 20, barW = 32, gap = 8;
+  const totalBars = 7;
+  const totalWidth = totalBars * (barW + gap) - gap;
+  const startX = (w - totalWidth) / 2;
+
+  const bars = weekPts.map((pts, i) => {
+    const barH = Math.round((pts / max) * (h - pad - 20));
+    const x = startX + i * (barW + gap);
+    const y = h - pad - barH;
+    const isToday = i === getTodayIdx();
+    const fill = isToday ? 'var(--accent)' : 'var(--bg3)';
+    const stroke = isToday ? 'none' : 'var(--border)';
+    return `
+      <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="1"/>
+      <text x="${x+barW/2}" y="${h-4}" text-anchor="middle" fill="var(--text2)" font-size="10" font-family="sans-serif">${DAY_NAMES[i]}</text>
+      ${pts > 0 ? `<text x="${x+barW/2}" y="${y-4}" text-anchor="middle" fill="${isToday ? 'var(--accent)' : 'var(--text2)'}" font-size="10" font-family="sans-serif" font-weight="bold">${pts}</text>` : ''}
+    `;
+  }).join('');
+
+  return `
+    <div class="chart-wrap">
+      <svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+        ${bars}
+      </svg>
+    </div>
+  `;
+}
+
+// ── REWARDS ──
+function buildRewards(child, pts) {
+  const lvIdx = getLevel(pts);
+  const lvProgress = getLevelProgress(pts);
+
+  // Levels list
+  const levelsHtml = LEVELS.map((lv, i) => {
+    const unlocked = lvIdx >= i;
+    return `
+      <div class="level-card">
+        <div class="level-icon" style="opacity:${unlocked?1:0.3}">${lv.icon}</div>
+        <div class="level-info">
+          <div class="level-name" style="color:${unlocked?'var(--text)':'var(--text3)'}">${lv.name}</div>
+          <div class="level-req">${lv.min === 0 ? 'Стартовый' : `от ${lv.min} очков`}</div>
+        </div>
+        <div class="level-check">${unlocked ? '✅' : '🔒'}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Badges
+  const badgesHtml = BADGE_DEFS.map(b => {
+    const unlocked = b.check(child);
+    return `
+      <div class="badge-item ${unlocked?'':'locked'}">
+        <div class="badge-icon">${b.icon}</div>
+        <div class="badge-name">${b.name}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Shared prizes
+  const sharedPrizesHtml = state.sharedPrizes.length === 0
+    ? `<div class="empty"><div class="empty-text">Нет общих призов</div></div>`
+    : state.sharedPrizes.map(p => {
+        const avail = pts >= p.pts;
+        return `
+          <div class="prize-item">
+            <div class="prize-info">
+              <div class="prize-name">🎁 ${p.name}</div>
+              <div class="prize-pts">${p.pts} очков</div>
+            </div>
+            <div class="prize-status ${avail?'status-avail':'status-not'}">${avail?'✅ Доступно':'🔒 Ещё нет'}</div>
+          </div>
+        `;
+      }).join('');
+
+  // Individual prizes
+  const indPrizesHtml = (child.individualPrizes||[]).length === 0
+    ? `<div class="empty"><div class="empty-text">Нет личных призов</div></div>`
+    : (child.individualPrizes||[]).map(p => {
+        if (p.type === 'points') {
+          const avail = pts >= p.pts;
+          return `
+            <div class="prize-item">
+              <div class="prize-info">
+                <div class="prize-name">⭐ ${p.name}</div>
+                <div class="prize-pts">${p.pts} очков</div>
+              </div>
+              <div class="prize-status ${avail?'status-avail':'status-not'}">${avail?'✅ Доступно':'🔒 Ещё нет'}</div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="prize-item">
+              <div class="prize-info">
+                <div class="prize-name">🎯 ${p.name}</div>
+                <div class="prize-pts">Достижение</div>
+              </div>
+              <div class="prize-status ${p.achieved?'status-avail':'status-not'}">${p.achieved?'✅ Достигнуто':'⏳ В процессе'}</div>
+            </div>
+          `;
+        }
+      }).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title">🏆 Уровни</div>
+      <div class="level-bar-wrap" style="margin-bottom:12px">
+        <div class="level-bar-label">
+          <span>${LEVELS[lvIdx].icon} ${LEVELS[lvIdx].name}</span>
+          <span>${lvProgress}% до следующего</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${lvProgress}%"></div></div>
+      </div>
+      ${levelsHtml}
+    </div>
+    <div class="card">
+      <div class="card-title">🏅 Значки</div>
+      <div class="badges-grid">${badgesHtml}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎁 Общие призы</div>
+      ${sharedPrizesHtml}
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ Личные призы</div>
+      ${indPrizesHtml}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// PARENT VIEW
+// ═══════════════════════════════════════════════════
+
+function buildParentView() {
+  if (ui.parentView === 'overview') {
+    return buildParentOverview();
+  } else {
+    return buildParentChildManage();
+  }
+}
+
+function buildParentOverview() {
+  const cards = state.children.map((c, i) => {
+    const pts = totalPts(c);
+    const lvIdx = getLevel(pts);
+    const lv = LEVELS[lvIdx];
+    const pCount = pendingCount(c);
+    const todayTasks = (c.tasks||[]).filter(t=>t.weekDay===getTodayIdx());
+    const confirmedToday = todayTasks.filter(t=>t.confirmed).length;
+    const pendingBadge = pCount > 0
+      ? `<div class="pending-badge">⏳ ${pCount} ждут</div>` : '';
+    return `
+      <div class="child-overview-card" onclick="selectChildParent(${i})">
+        <div class="child-ov-avatar">${c.avatar}</div>
+        <div class="child-ov-info">
+          <div class="child-ov-name">${c.name}</div>
+          <div class="child-ov-level">${lv.icon} ${lv.name}</div>
+          <div class="child-ov-stats">
+            <div class="child-ov-stat"><strong>${pts}</strong> очков</div>
+            <div class="child-ov-stat"><strong>${confirmedToday}/${todayTasks.length}</strong> сегодня</div>
+          </div>
+        </div>
+        ${pendingBadge}
+        <span style="color:var(--text2)">›</span>
+      </div>
+    `;
+  }).join('');
+
+  const sharedPrizesHtml = `
+    <div class="card">
+      <div class="card-title">🎁 Общие призы</div>
+      ${state.sharedPrizes.map(p => `
+        <div class="prize-item">
+          <div class="prize-info">
+            <div class="prize-name">🎁 ${p.name}</div>
+            <div class="prize-pts">${p.pts} очков</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteSharedPrize(${p.id})">🗑️</button>
+        </div>
+      `).join('') || '<div class="empty"><div class="empty-text">Нет общих призов</div></div>'}
+      <div class="divider"></div>
+      <button class="btn btn-secondary btn-block" onclick="openAddPrize('shared')">➕ Добавить общий приз</button>
+    </div>
+  `;
+
+  const pinSection = `
+    <div class="card">
+      <div class="card-title">🔒 PIN-код</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="text-muted" style="font-size:13px">Текущий PIN: <strong>${state.parentPin}</strong></span>
+        <button class="btn btn-secondary btn-sm" onclick="openChangePin()">Изменить</button>
+      </div>
+    </div>
+  `;
+
+  const exitBtn = `
+    <button class="btn btn-secondary btn-block" onclick="exitParent()">Выйти из режима родителя</button>
+  `;
+
+  return `
+    <div style="font-size:18px;font-weight:800;margin-bottom:12px">👨‍💼 Обзор детей</div>
+    ${cards}
+    ${sharedPrizesHtml}
+    ${pinSection}
+    <div class="mt-8">${exitBtn}</div>
+  `;
+}
+
+function buildParentChildManage() {
+  const child = activeChild();
+  const todayIdx = getTodayIdx();
+  const weekGrid = buildWeekGrid(child);
+
+  // All tasks
+  const allTasks = (child.tasks||[]);
+  let taskListHtml = '';
+  if (allTasks.length === 0) {
+    taskListHtml = `<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Нет заданий</div></div>`;
+  } else {
+    // Group by day
+    const byDay = {};
+    allTasks.forEach(t => {
+      if (!byDay[t.weekDay]) byDay[t.weekDay] = [];
+      byDay[t.weekDay].push(t);
+    });
+    taskListHtml = Object.entries(byDay).map(([day, tasks]) => `
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin:10px 0 4px">${DAY_NAMES[day]}</div>
+      ${tasks.map(t => buildTaskRow(t, true)).join('')}
+    `).join('');
+  }
+
+  // Individual prizes
+  const indPrizesHtml = (child.individualPrizes||[]).map(p => `
+    <div class="prize-item">
+      <div class="prize-info">
+        <div class="prize-name">${p.type==='goal'?'🎯':'⭐'} ${p.name}</div>
+        <div class="prize-pts">${p.type==='points'?`${p.pts} очков`:'Достижение'}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${p.type==='goal' && !p.achieved ? `<button class="btn btn-primary btn-sm" onclick="markGoalAchieved(${p.id})">Засчитать</button>` : ''}
+        ${p.achieved ? '<span class="prize-status status-avail">✅</span>' : ''}
+        <button class="btn btn-danger btn-sm" onclick="deleteIndPrize(${p.id})">🗑️</button>
+      </div>
+    </div>
+  `).join('') || `<div class="empty"><div class="empty-text">Нет личных призов</div></div>`;
+
+  // Pending tasks confirm
+  const pendingTasks = allTasks.filter(t => t.markedDone && !t.confirmed);
+  const confirmSection = pendingTasks.length > 0 ? `
+    <div class="card" style="border-color:var(--orange)">
+      <div class="card-title" style="color:var(--orange)">⏳ Ожидают подтверждения (${pendingTasks.length})</div>
+      ${pendingTasks.map(t => `
+        <div class="confirm-task-item">
+          <div class="task-cat-dot" style="background:${catColor(t.cat)}"></div>
+          <div style="flex:1;font-size:14px;font-weight:600">${t.title}</div>
+          <span class="task-pts">${t.pts}⚡</span>
+          <button class="btn btn-primary btn-sm" onclick="confirmTask(${t.id})">✓</button>
+        </div>
+      `).join('')}
+      <div class="divider"></div>
+      <button class="btn btn-gold btn-block" onclick="confirmAllToday()">✅ Подтвердить все за сегодня</button>
+    </div>
+  ` : '';
+
+  return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <button class="btn btn-secondary btn-sm" onclick="backToOverview()">← Назад</button>
+      <span style="font-size:16px;font-weight:800">${child.avatar} ${child.name}</span>
+    </div>
+    ${confirmSection}
+    <div class="card">
+      <div class="card-title">🗓️ Неделя</div>
+      ${weekGrid}
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Все задания</div>
+      ${taskListHtml}
+      <div class="divider"></div>
+      <button class="btn btn-primary btn-block" onclick="openAddTask()">➕ Добавить задание</button>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ Личные призы</div>
+      ${indPrizesHtml}
+      <div class="divider"></div>
+      <button class="btn btn-secondary btn-block" onclick="openAddPrize('individual')">➕ Добавить личный приз</button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════════
+
+function buildModal() {
+  if (!ui.modal) return '';
+  let content = '';
+  if (ui.modal === 'pin') content = buildPinModal();
+  else if (ui.modal === 'add-task') content = buildAddTaskModal();
+  else if (ui.modal === 'day-detail') content = buildDayDetailModal();
+  else if (ui.modal === 'add-prize') content = buildAddPrizeModal();
+  else if (ui.modal === 'add-child') content = buildAddChildModal();
+  else if (ui.modal === 'change-pin') content = buildChangePinModal();
+  return `
+    <div class="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        ${content}
+      </div>
+    </div>
+  `;
+}
+
+function buildPinModal() {
+  const dots = [0,1,2,3].map(i =>
+    `<div class="pin-dot ${ui.pinInput.length > i ? 'filled' : ''}"></div>`
+  ).join('');
+  const errorMsg = ui.pinError ? `<div style="color:var(--red);text-align:center;font-size:13px;margin-top:-10px;margin-bottom:10px">Неверный PIN</div>` : '';
+  const keys = [1,2,3,4,5,6,7,8,9,'←',0,'✓'].map(k => `
+    <div class="pin-key" onclick="pinKey('${k}')">${k}</div>
+  `).join('');
+  return `
+    <div class="modal-header">
+      <div class="modal-title">🔒 Режим родителя</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <p style="text-align:center;color:var(--text2);font-size:13px;margin-bottom:12px">Введите PIN-код</p>
+    <div class="pin-display">${dots}</div>
+    ${errorMsg}
+    <div class="pin-keypad">${keys}</div>
+    ${state.parentMode ? `<div class="divider"></div><button class="btn btn-danger btn-block" onclick="exitParent()">Выйти из режима родителя</button>` : ''}
+  `;
+}
+
+function buildChangePinModal() {
+  return `
+    <div class="modal-header">
+      <div class="modal-title">🔒 Изменить PIN</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Новый PIN (4 цифры)</label>
+      <input class="form-input" id="new-pin-input" type="password" maxlength="4" inputmode="numeric" placeholder="1234">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="savePin()">Сохранить PIN</button>
+  `;
+}
+
+function buildAddTaskModal() {
+  const f = ui.addTaskForm;
+  const todayIdx = getTodayIdx();
+  const ptsOpts = [5,10,15,20,30].map(p => `
+    <div class="pts-opt ${f.pts===p?'selected':''}" onclick="selectPts(${p})">${p}</div>
+  `).join('');
+  const catOptions = Object.entries(CATEGORIES).map(([k,v]) =>
+    `<option value="${k}" ${f.cat===k?'selected':''}>${v.icon} ${v.label}</option>`
+  ).join('');
+  const dayOpts = DAY_NAMES.map((d,i) => `
+    <option value="${i}" ${(f.weekDay??todayIdx)===i?'selected':''}>${d}</option>
+  `).join('');
+  return `
+    <div class="modal-header">
+      <div class="modal-title">➕ Новое задание</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Название задания</label>
+      <input class="form-input" id="task-title" value="${f.title}" placeholder="Тренировка по футболу…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Категория</label>
+      <select class="form-select" id="task-cat">${catOptions}</select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">День недели</label>
+      <select class="form-select" id="task-day">${dayOpts}</select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Очки</label>
+      <div class="pts-options">${ptsOpts}</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Повторение</label>
+      <select class="form-select" id="task-repeat">
+        <option value="once" ${f.repeat==='once'?'selected':''}>1️⃣ Разово</option>
+        <option value="daily" ${f.repeat==='daily'?'selected':''}>🔄 Каждый день</option>
+        <option value="weekly" ${f.repeat==='weekly'?'selected':''}>📅 Еженедельно</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveTask()">Добавить задание</button>
+  `;
+}
+
+function buildDayDetailModal() {
+  const child = activeChild();
+  const day = ui.selectedDay;
+  const dayTasks = (child.tasks||[]).filter(t => t.weekDay === day);
+  const key = `w-${day}`;
+  const isConfirmed = child.confirmedDays[key];
+  const hasPending = dayTasks.some(t => t.markedDone && !t.confirmed);
+
+  let taskListHtml = '';
+  if (dayTasks.length === 0) {
+    taskListHtml = `<div class="empty"><div class="empty-text">Нет заданий на этот день</div></div>`;
+  } else {
+    taskListHtml = dayTasks.map(t => `
+      <div class="confirm-task-item">
+        <div class="task-cat-dot" style="background:${catColor(t.cat)}"></div>
+        <div style="flex:1;font-size:14px;font-weight:600">${t.title}</div>
+        <span style="font-size:12px;color:var(--text2)">${t.pts}⚡</span>
+        <span style="font-size:16px">${t.confirmed?'✅':t.markedDone?'⏳':'○'}</span>
+      </div>
+    `).join('');
+  }
+
+  const confirmBtn = state.parentMode && hasPending
+    ? `<div class="divider"></div><button class="btn btn-gold btn-block" onclick="confirmDay(${day})">✅ Подтвердить день</button>` : '';
+  const confirmedNote = isConfirmed
+    ? `<div style="color:var(--accent);font-weight:700;font-size:13px;margin-top:8px">✅ День подтверждён</div>` : '';
+
+  return `
+    <div class="modal-header">
+      <div class="modal-title">${DAY_NAMES[day]} — задания</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    ${taskListHtml}
+    ${confirmedNote}
+    ${confirmBtn}
+  `;
+}
+
+function buildAddPrizeModal() {
+  const f = ui.addPrizeForm;
+  const isShared = ui.editingPrizeType === 'shared';
+  return `
+    <div class="modal-header">
+      <div class="modal-title">🎁 ${isShared?'Общий приз':'Личный приз'}</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Название приза</label>
+      <input class="form-input" id="prize-name" value="${f.name}" placeholder="Поход в кино…">
+    </div>
+    ${!isShared ? `
+      <div class="form-group">
+        <label class="form-label">Тип приза</label>
+        <select class="form-select" id="prize-type" onchange="setPrizeType(this.value)">
+          <option value="points" ${f.type==='points'?'selected':''}>⭐ За очки</option>
+          <option value="goal" ${f.type==='goal'?'selected':''}>🎯 Достижение</option>
+        </select>
+      </div>
+    ` : ''}
+    ${(isShared || f.type === 'points') ? `
+      <div class="form-group">
+        <label class="form-label">Стоимость (очки)</label>
+        <input class="form-input" id="prize-pts" type="number" value="${f.pts}" min="1" placeholder="100">
+      </div>
+    ` : ''}
+    <button class="btn btn-primary btn-block" onclick="savePrize()">Добавить приз</button>
+  `;
+}
+
+function buildAddChildModal() {
+  const f = ui.addChildForm;
+  const emojiOpts = AVATARS.map(e => `
+    <div class="emoji-opt ${f.avatar===e?'selected':''}" onclick="selectAvatar('${e}')">${e}</div>
+  `).join('');
+  return `
+    <div class="modal-header">
+      <div class="modal-title">👶 Новый профиль</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Имя ребёнка</label>
+      <input class="form-input" id="child-name" value="${f.name}" placeholder="Имя…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Аватар</label>
+      <div class="emoji-grid">${emojiOpts}</div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveChild()">Создать профиль</button>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// EVENT HANDLERS
+// ═══════════════════════════════════════════════════
+
+function bindEvents() {
+  // Nothing extra needed — all inline onclick handlers
+}
+
+// Tab
+function setTab(tab) {
+  ui.tab = tab;
+  render();
+}
+
+// Profile
+function switchChild(i) {
+  state.activeChild = i;
+  saveState();
+  if (ui.parentView === 'child') ui.parentView = 'child';
+  render();
+}
+
+function selectChildParent(i) {
+  state.activeChild = i;
+  saveState();
+  ui.parentView = 'child';
+  render();
+}
+
+function backToOverview() {
+  ui.parentView = 'overview';
+  render();
+}
+
+// Parent mode
+function openPin() {
+  ui.modal = 'pin';
+  ui.pinInput = '';
+  ui.pinError = false;
+  render();
+}
+
+function pinKey(k) {
+  if (k === '←') {
+    ui.pinInput = ui.pinInput.slice(0,-1);
+  } else if (k === '✓') {
+    submitPin();
+    return;
+  } else if (ui.pinInput.length < 4) {
+    ui.pinInput += k;
+    if (ui.pinInput.length === 4) {
+      setTimeout(submitPin, 100);
+      render();
+      return;
+    }
+  }
+  render();
+}
+
+function submitPin() {
+  if (ui.pinInput === state.parentPin) {
+    state.parentMode = true;
+    ui.modal = null;
+    ui.pinInput = '';
+    ui.tab = 'parent';
+    ui.parentView = 'overview';
+    saveState();
+    render();
+    showToast('✅ Режим родителя активирован');
+  } else {
+    ui.pinError = true;
+    ui.pinInput = '';
+    render();
+  }
+}
+
+function exitParent() {
+  state.parentMode = false;
+  ui.modal = null;
+  ui.tab = 'today';
+  ui.parentView = 'overview';
+  saveState();
+  render();
+  showToast('Режим ребёнка активирован');
+}
+
+function openChangePin() {
+  ui.modal = 'change-pin';
+  render();
+}
+
+function savePin() {
+  const val = document.getElementById('new-pin-input')?.value;
+  if (!val || val.length !== 4 || !/^\d+$/.test(val)) {
+    showToast('⚠️ PIN должен быть 4 цифры');
+    return;
+  }
+  state.parentPin = val;
+  saveState();
+  closeModal();
+  showToast('✅ PIN изменён');
+}
+
+// Tasks
+function openAddTask() {
+  ui.modal = 'add-task';
+  ui.addTaskForm = { title:'', cat:'sport', pts:10, repeat:'daily', weekDay: getTodayIdx() };
+  render();
+}
+
+function selectPts(p) {
+  ui.addTaskForm.pts = p;
+  render();
+}
+
+function setPrizeType(t) {
+  ui.addPrizeForm.type = t;
+  render();
+}
+
+function saveTask() {
+  const title = document.getElementById('task-title')?.value?.trim();
+  if (!title) { showToast('⚠️ Введите название задания'); return; }
+  const cat = document.getElementById('task-cat')?.value;
+  const repeat = document.getElementById('task-repeat')?.value;
+  const weekDay = parseInt(document.getElementById('task-day')?.value ?? getTodayIdx());
+  const child = activeChild();
+
+  // For daily tasks, add for all days
+  if (repeat === 'daily') {
+    DAY_NAMES.forEach((_,i) => {
+      child.tasks.push({
+        id: newId() + i,
+        title,
+        cat,
+        pts: ui.addTaskForm.pts,
+        markedDone: false,
+        confirmed: false,
+        fromParent: state.parentMode,
+        repeat,
+        weekDay: i,
+      });
+    });
+  } else {
+    child.tasks.push({
+      id: newId(),
+      title,
+      cat,
+      pts: ui.addTaskForm.pts,
+      markedDone: false,
+      confirmed: false,
+      fromParent: state.parentMode,
+      repeat,
+      weekDay,
+    });
+  }
+
+  saveState();
+  closeModal();
+  showToast('✅ Задание добавлено');
+}
+
+function markDone(taskId) {
+  const child = activeChild();
+  const task = child.tasks.find(t => t.id === taskId);
+  if (task && !task.markedDone) {
+    task.markedDone = true;
+    saveState();
+    render();
+    showToast('⏳ Ждёт подтверждения родителя');
+  }
+}
+
+function deleteTask(taskId) {
+  const child = activeChild();
+  child.tasks = child.tasks.filter(t => t.id !== taskId);
+  saveState();
+  render();
+  showToast('🗑️ Задание удалено');
+}
+
+function confirmTask(taskId) {
+  const child = activeChild();
+  const task = child.tasks.find(t => t.id === taskId);
+  if (task && task.markedDone && !task.confirmed) {
+    task.confirmed = true;
+    const dayIdx = task.weekDay;
+    if (!child.weekPts) child.weekPts = [0,0,0,0,0,0,0];
+    child.weekPts[dayIdx] = (child.weekPts[dayIdx]||0) + task.pts;
+    saveState();
+    render();
+    showToast(`✅ +${task.pts} очков!`);
+  }
+}
+
+function confirmAllToday() {
+  const child = activeChild();
+  const todayIdx = getTodayIdx();
+  const key = `w-${todayIdx}`;
+  let added = 0;
+  (child.tasks||[]).forEach(t => {
+    if (t.weekDay === todayIdx && t.markedDone && !t.confirmed) {
+      t.confirmed = true;
+      if (!child.weekPts) child.weekPts = [0,0,0,0,0,0,0];
+      child.weekPts[todayIdx] = (child.weekPts[todayIdx]||0) + t.pts;
+      added += t.pts;
+    }
+  });
+  child.confirmedDays[key] = true;
+  saveState();
+  closeModal();
+  render();
+  if (added > 0) showToast(`✅ День подтверждён! +${added} очков`);
+}
+
+function confirmDay(dayIdx) {
+  const child = activeChild();
+  const key = `w-${dayIdx}`;
+  let added = 0;
+  (child.tasks||[]).forEach(t => {
+    if (t.weekDay === dayIdx && t.markedDone && !t.confirmed) {
+      t.confirmed = true;
+      if (!child.weekPts) child.weekPts = [0,0,0,0,0,0,0];
+      child.weekPts[dayIdx] = (child.weekPts[dayIdx]||0) + t.pts;
+      added += t.pts;
+    }
+  });
+  child.confirmedDays[key] = true;
+  saveState();
+  closeModal();
+  render();
+  if (added > 0) showToast(`✅ +${added} очков!`);
+}
+
+// Day detail
+function openDayDetail(dayIdx) {
+  ui.selectedDay = dayIdx;
+  ui.modal = 'day-detail';
+  render();
+}
+
+// Prizes
+function openAddPrize(type) {
+  ui.editingPrizeType = type;
+  ui.addPrizeForm = { name:'', pts:100, type:'points' };
+  ui.modal = 'add-prize';
+  render();
+}
+
+function savePrize() {
+  const name = document.getElementById('prize-name')?.value?.trim();
+  if (!name) { showToast('⚠️ Введите название'); return; }
+  if (ui.editingPrizeType === 'shared') {
+    const pts = parseInt(document.getElementById('prize-pts')?.value) || 100;
+    state.sharedPrizes.push({ id: newId(), pts, name });
+  } else {
+    const type = document.getElementById('prize-type')?.value || 'points';
+    const pts = type === 'points' ? (parseInt(document.getElementById('prize-pts')?.value) || 100) : 0;
+    const child = activeChild();
+    if (!child.individualPrizes) child.individualPrizes = [];
+    child.individualPrizes.push({ id: newId(), name, pts, type, achieved: false });
+  }
+  saveState();
+  closeModal();
+  showToast('🎁 Приз добавлен');
+}
+
+function deleteSharedPrize(id) {
+  state.sharedPrizes = state.sharedPrizes.filter(p => p.id !== id);
+  saveState();
+  render();
+}
+
+function deleteIndPrize(id) {
+  const child = activeChild();
+  child.individualPrizes = (child.individualPrizes||[]).filter(p => p.id !== id);
+  saveState();
+  render();
+}
+
+function markGoalAchieved(id) {
+  const child = activeChild();
+  const prize = (child.individualPrizes||[]).find(p => p.id === id);
+  if (prize) {
+    prize.achieved = true;
+    saveState();
+    render();
+    showToast('🎯 Достижение засчитано!');
+  }
+}
+
+// Child
+function openAddChild() {
+  ui.addChildForm = { name:'', avatar:'⚽' };
+  ui.modal = 'add-child';
+  render();
+}
+
+function selectAvatar(emoji) {
+  ui.addChildForm.avatar = emoji;
+  render();
+}
+
+function saveChild() {
+  const name = document.getElementById('child-name')?.value?.trim();
+  if (!name) { showToast('⚠️ Введите имя'); return; }
+  state.children.push({
+    id: newId(),
+    name,
+    avatar: ui.addChildForm.avatar,
+    tasks: [],
+    confirmedDays: {},
+    weekPts: [0,0,0,0,0,0,0],
+    individualPrizes: [],
+  });
+  state.activeChild = state.children.length - 1;
+  saveState();
+  closeModal();
+  render();
+  showToast(`✅ Профиль ${name} создан`);
+}
+
+// Modal
+function closeModal() {
+  ui.modal = null;
+  render();
+}
+
+function handleOverlayClick(e) {
+  if (e.target === e.currentTarget) closeModal();
+}
+
+// Toast
+let toastTimer = null;
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  if (toastTimer) clearTimeout(toastTimer);
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  toastTimer = setTimeout(() => el.remove(), 2500);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+
+// Expose functions globally for onclick handlers
+Object.assign(window, {
+  setTab, switchChild, selectChildParent, backToOverview,
+  openPin, pinKey, exitParent, openChangePin, savePin,
+  openAddTask, selectPts, saveTask, markDone, deleteTask,
+  confirmTask, confirmAllToday, confirmDay, openDayDetail,
+  openAddPrize, savePrize, setPrizeType, deleteSharedPrize,
+  deleteIndPrize, markGoalAchieved,
+  openAddChild, selectAvatar, saveChild,
+  closeModal, handleOverlayClick,
+});
+
+render();
+</script>
+</body>
+</html>
