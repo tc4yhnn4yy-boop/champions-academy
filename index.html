@@ -756,7 +756,10 @@ function buildParentOverview() {
 
   const sharedHtml = state.sharedPrizes.map(p => `<div class="prize-item">
     <div class="prize-info"><div class="prize-name">🎁 ${p.name}</div><div class="prize-pts">${p.pts} очков</div></div>
-    <button class="btn btn-danger btn-sm" onclick="deleteSharedPrize(${p.id})">🗑️</button>
+    <div class="flex-row">
+      <button class="btn btn-secondary btn-sm" onclick="openEditPrize('shared',${p.id})">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteSharedPrize(${p.id})">🗑️</button>
+    </div>
   </div>`).join('') || `<div class="empty"><div class="empty-text">Нет общих призов</div></div>`;
 
   const rewardTypesHtml = (state.rewardTypes||[]).map(rt => `<div class="prize-item">
@@ -830,6 +833,7 @@ function buildParentChildManage() {
     <div class="flex-row">
       ${p.type==='goal'&&!p.achieved?`<button class="btn btn-primary btn-sm" onclick="markGoalAchieved(${p.id})">Засчитать</button>`:''}
       ${p.achieved?'<span class="prize-status status-avail">✅</span>':''}
+      <button class="btn btn-secondary btn-sm" onclick="openEditPrize('individual',${p.id})">✏️</button>
       <button class="btn btn-danger btn-sm" onclick="deleteIndPrize(${p.id})">🗑️</button>
     </div>
   </div>`).join('') || `<div class="empty"><div class="empty-text">Нет личных призов</div></div>`;
@@ -890,6 +894,7 @@ function buildModal() {
     'add-task':        buildAddTaskModal,
     'day-detail':      buildDayDetailModal,
     'add-prize':       buildAddPrizeModal,
+    'edit-prize':      buildEditPrizeModal,
     'add-child':       buildAddChildModal,
     'edit-child':      buildEditChildModal,
     'delete-child':    buildDeleteChildModal,
@@ -928,9 +933,9 @@ function buildAddTaskModal() {
   const dayPicks = DAY_NAMES.map((d,i)=>`<div class="day-pick-btn ${(f.weekDays||[]).includes(i)?'selected':''}" onclick="toggleDay(${i})">${d}</div>`).join('');
   return `<div class="modal-header"><div class="modal-title">➕ Новое задание</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="form-group"><label class="form-label">Название задания</label>
-      <input class="form-input" id="task-title" value="${f.title}" placeholder="Тренировка по футболу…"></div>
+      <input class="form-input" id="task-title" value="${f.title}" oninput="ui.addTaskForm.title=this.value" placeholder="Тренировка по футболу…"></div>
     <div class="form-group"><label class="form-label">Категория</label>
-      <select class="form-select" id="task-cat">${catOpts}</select></div>
+      <select class="form-select" id="task-cat" onchange="ui.addTaskForm.cat=this.value">${catOpts}</select></div>
     <div class="form-group">
       <label class="form-label">Дни недели</label>
       <div class="day-quick-btns">
@@ -971,17 +976,39 @@ function buildDayDetailModal() {
 function buildAddPrizeModal() {
   const f = ui.addPrizeForm;
   const isShared = ui.editPrizeType === 'shared';
+  const otherChildren = state.children.filter((c,i)=>i!==state.activeChild);
+  const alsoForHtml = (!isShared && otherChildren.length > 0) ? `<div class="form-group">
+      <label class="form-label">Также добавить для:</label>
+      ${state.children.map((c,i) => i===state.activeChild ? '' : `
+        <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer">
+          <input type="checkbox" ${(f.alsoForChildren||[]).includes(i)?'checked':''} onchange="toggleAlsoForChild(${i})">
+          ${c.avatar} ${c.name}
+        </label>`).join('')}
+    </div>` : '';
   return `<div class="modal-header"><div class="modal-title">🎁 ${isShared?'Общий приз':'Личный приз'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="form-group"><label class="form-label">Название приза</label>
-      <input class="form-input" id="prize-name" value="${f.name}" placeholder="Поход в кино…"></div>
+      <input class="form-input" id="prize-name" value="${f.name}" oninput="ui.addPrizeForm.name=this.value" placeholder="Поход в кино…"></div>
     ${!isShared?`<div class="form-group"><label class="form-label">Тип приза</label>
       <select class="form-select" id="prize-type" onchange="setPrizeType(this.value)">
         <option value="points" ${f.type==='points'?'selected':''}>⭐ За очки</option>
         <option value="goal" ${f.type==='goal'?'selected':''}>🎯 Достижение</option>
       </select></div>`:''}
     ${(isShared||f.type==='points')?`<div class="form-group"><label class="form-label">Стоимость (очки)</label>
-      <input class="form-input" id="prize-pts" type="number" value="${f.pts}" min="1"></div>`:''}
+      <input class="form-input" id="prize-pts" type="number" value="${f.pts}" min="1" oninput="ui.addPrizeForm.pts=parseInt(this.value)||0"></div>`:''}
+    ${alsoForHtml}
     <button class="btn btn-primary btn-block" onclick="savePrize()">Добавить приз</button>`;
+}
+
+function buildEditPrizeModal() {
+  const f = ui.editPrizeForm;
+  if (!f) return '';
+  const isShared = f.scope === 'shared';
+  return `<div class="modal-header"><div class="modal-title">✏️ ${isShared?'Изменить общий приз':'Изменить личный приз'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Название приза</label>
+      <input class="form-input" id="ep-name" value="${f.name}" oninput="ui.editPrizeForm.name=this.value"></div>
+    ${(isShared||f.type==='points')?`<div class="form-group"><label class="form-label">Стоимость (очки)</label>
+      <input class="form-input" id="ep-pts" type="number" value="${f.pts}" min="1" oninput="ui.editPrizeForm.pts=parseInt(this.value)||0"></div>`:''}
+    <button class="btn btn-primary btn-block" onclick="doEditPrize()">Сохранить</button>`;
 }
 
 function buildAddChildModal() {
@@ -989,7 +1016,7 @@ function buildAddChildModal() {
   const emojiOpts = AVATARS.map(e=>`<div class="emoji-opt ${f.avatar===e?'selected':''}" onclick="selectAvatar('${e}','add')">${e}</div>`).join('');
   return `<div class="modal-header"><div class="modal-title">👶 Новый профиль</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="form-group"><label class="form-label">Имя ребёнка</label>
-      <input class="form-input" id="child-name" value="${f.name}" placeholder="Имя…"></div>
+      <input class="form-input" id="child-name" value="${f.name}" oninput="ui.addChildForm.name=this.value" placeholder="Имя…"></div>
     <div class="form-group"><label class="form-label">Аватар</label><div class="emoji-grid">${emojiOpts}</div></div>
     <button class="btn btn-primary btn-block" onclick="saveChild()">Создать профиль</button>`;
 }
@@ -999,7 +1026,7 @@ function buildEditChildModal() {
   const emojiOpts = AVATARS.map(e=>`<div class="emoji-opt ${f.avatar===e?'selected':''}" onclick="selectAvatar('${e}','edit')">${e}</div>`).join('');
   return `<div class="modal-header"><div class="modal-title">✏️ Редактировать профиль</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="form-group"><label class="form-label">Имя ребёнка</label>
-      <input class="form-input" id="edit-child-name" value="${f.name}" placeholder="Имя…"></div>
+      <input class="form-input" id="edit-child-name" value="${f.name}" oninput="ui.editChildForm.name=this.value" placeholder="Имя…"></div>
     <div class="form-group"><label class="form-label">Аватар</label><div class="emoji-grid">${emojiOpts}</div></div>
     <button class="btn btn-primary btn-block" onclick="saveEditChild()">Сохранить</button>`;
 }
@@ -1022,11 +1049,11 @@ function buildAddRewardTypeModal() {
   return `<div class="modal-header"><div class="modal-title">➕ Тип поощрения</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="form-group"><label class="form-label">Иконка</label><div class="emoji-grid">${iconOpts}</div></div>
     <div class="form-group"><label class="form-label">Название</label>
-      <input class="form-input" id="rt-name" value="${f.name}" placeholder="Деньги, минуты гаджетов…"></div>
+      <input class="form-input" id="rt-name" value="${f.name}" oninput="ui.addRewardTypeForm.name=this.value" placeholder="Деньги, минуты гаджетов…"></div>
     <div class="form-group"><label class="form-label">Единица измерения</label>
-      <input class="form-input" id="rt-unit" value="${f.unit}" placeholder="тенге, мин, порция…"></div>
+      <input class="form-input" id="rt-unit" value="${f.unit}" oninput="ui.addRewardTypeForm.unit=this.value" placeholder="тенге, мин, порция…"></div>
     <div class="form-group"><label class="form-label">Курс: 1 балл = ? единиц</label>
-      <input class="form-input" id="rt-rate" type="number" value="${f.rate}" min="0.01" step="0.01"></div>
+      <input class="form-input" id="rt-rate" type="number" value="${f.rate}" min="0.01" step="0.01" oninput="ui.addRewardTypeForm.rate=parseFloat(this.value)||0"></div>
     <button class="btn btn-primary btn-block" onclick="saveRewardType()">Добавить</button>`;
 }
 
@@ -1038,11 +1065,11 @@ function buildEditRewardTypeModal() {
   return `<div class="modal-header"><div class="modal-title">✏️ Редактировать поощрение</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="form-group"><label class="form-label">Иконка</label><div class="emoji-grid">${iconOpts}</div></div>
     <div class="form-group"><label class="form-label">Название</label>
-      <input class="form-input" id="ert-name" value="${f.name}"></div>
+      <input class="form-input" id="ert-name" value="${f.name}" oninput="ui.editRewardTypeForm.name=this.value"></div>
     <div class="form-group"><label class="form-label">Единица измерения</label>
-      <input class="form-input" id="ert-unit" value="${f.unit}"></div>
+      <input class="form-input" id="ert-unit" value="${f.unit}" oninput="ui.editRewardTypeForm.unit=this.value"></div>
     <div class="form-group"><label class="form-label">Курс: 1 балл = ? единиц</label>
-      <input class="form-input" id="ert-rate" type="number" value="${f.rate}" min="0.01" step="0.01"></div>
+      <input class="form-input" id="ert-rate" type="number" value="${f.rate}" min="0.01" step="0.01" oninput="ui.editRewardTypeForm.rate=parseFloat(this.value)||0"></div>
     <button class="btn btn-primary btn-block" onclick="doEditRewardType()">Сохранить</button>`;
 }
 
@@ -1207,11 +1234,26 @@ function openDayDetail(day) { ui.selectedDay = day; ui.modal = 'day-detail'; ren
 
 // Prizes
 function openAddPrize(type) {
-  ui.editPrizeType = type; ui.addPrizeForm = { name:'', pts:100, type:'points' };
+  ui.editPrizeType = type; ui.addPrizeForm = { name:'', pts:100, type:'points', alsoForChildren:[] };
   ui.modal = 'add-prize'; render();
 }
 
-function setPrizeType(t) { ui.addPrizeForm.type = t; render(); }
+function setPrizeType(t) {
+  const nameEl = document.getElementById('prize-name'), ptsEl = document.getElementById('prize-pts');
+  if (nameEl) ui.addPrizeForm.name = nameEl.value;
+  if (ptsEl) ui.addPrizeForm.pts = parseInt(ptsEl.value)||ui.addPrizeForm.pts;
+  ui.addPrizeForm.type = t; render();
+}
+
+function toggleAlsoForChild(i) {
+  const nameEl = document.getElementById('prize-name'), ptsEl = document.getElementById('prize-pts');
+  if (nameEl) ui.addPrizeForm.name = nameEl.value;
+  if (ptsEl) ui.addPrizeForm.pts = parseInt(ptsEl.value)||ui.addPrizeForm.pts;
+  const arr = ui.addPrizeForm.alsoForChildren || (ui.addPrizeForm.alsoForChildren=[]);
+  const idx = arr.indexOf(i);
+  if (idx>=0) arr.splice(idx,1); else arr.push(i);
+  render();
+}
 
 function savePrize() {
   const name = document.getElementById('prize-name')?.value?.trim();
@@ -1225,6 +1267,13 @@ function savePrize() {
     const child = activeChild();
     if (!child.individualPrizes) child.individualPrizes = [];
     child.individualPrizes.push({ id:newId(), name, pts, type, achieved:false });
+    (ui.addPrizeForm.alsoForChildren||[]).forEach(idx => {
+      const c = state.children[idx];
+      if (c) {
+        if (!c.individualPrizes) c.individualPrizes = [];
+        c.individualPrizes.push({ id:newId(), name, pts, type, achieved:false });
+      }
+    });
   }
   saveState(); closeModal(); showToast('🎁 Приз добавлен');
 }
@@ -1235,6 +1284,37 @@ function deleteIndPrize(id) {
   const child = activeChild();
   child.individualPrizes = (child.individualPrizes||[]).filter(p=>p.id!==id);
   saveState(); render();
+}
+
+function openEditPrize(scope, id) {
+  if (scope === 'shared') {
+    const p = state.sharedPrizes.find(x=>x.id===id);
+    if (!p) return;
+    ui.editPrizeForm = { id, scope, name:p.name, pts:p.pts };
+  } else {
+    const p = (activeChild().individualPrizes||[]).find(x=>x.id===id);
+    if (!p) return;
+    ui.editPrizeForm = { id, scope, name:p.name, pts:p.pts, type:p.type };
+  }
+  ui.modal = 'edit-prize'; render();
+}
+
+function doEditPrize() {
+  const name = document.getElementById('ep-name')?.value?.trim();
+  if (!name) { showToast('⚠️ Введите название'); return; }
+  const f = ui.editPrizeForm;
+  if (f.scope === 'shared') {
+    const pts = parseInt(document.getElementById('ep-pts')?.value)||f.pts;
+    const p = state.sharedPrizes.find(x=>x.id===f.id);
+    if (p) { p.name = name; p.pts = pts; }
+  } else {
+    const p = (activeChild().individualPrizes||[]).find(x=>x.id===f.id);
+    if (p) {
+      p.name = name;
+      if (p.type === 'points') p.pts = parseInt(document.getElementById('ep-pts')?.value)||p.pts;
+    }
+  }
+  saveState(); closeModal(); render(); showToast('✅ Приз обновлён');
 }
 
 function markGoalAchieved(id) {
@@ -1376,7 +1456,8 @@ Object.assign(window, {
   openPin, pinKey, exitParent, openChangePin, savePin,
   openAddTask, selectPts, toggleDay, setDaysPreset, saveTask,
   markDone, deleteTask, confirmTask, confirmAllToday, confirmDay, openDayDetail,
-  openAddPrize, setPrizeType, savePrize, deleteSharedPrize, deleteIndPrize, markGoalAchieved,
+  openAddPrize, setPrizeType, toggleAlsoForChild, savePrize, deleteSharedPrize, deleteIndPrize, markGoalAchieved,
+  openEditPrize, doEditPrize,
   openAddChild, openEditChild, selectAvatar, saveChild, saveEditChild,
   confirmDeleteChild, doDeleteChild,
   openAddRewardType, selectRewardIcon, saveRewardType,
