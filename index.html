@@ -87,6 +87,8 @@ body {
 .hero-card::before { content: '⚽'; position: absolute; right: -10px; top: -10px; font-size: 80px; opacity: .08; transform: rotate(-15deg); }
 .hero-name { font-size: 20px; font-weight: 800; }
 .hero-level { font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 2px; }
+.hero-level-sub { font-size: 11px; color: var(--text2); margin-top: 2px; font-style: italic; }
+.level-subtitle { font-size: 11px; color: var(--text2); margin-top: 1px; font-style: italic; }
 .hero-pts { display: flex; align-items: baseline; gap: 4px; margin: 10px 0 6px; }
 .hero-pts-num { font-size: 36px; font-weight: 900; color: var(--accent); }
 .hero-pts-label { font-size: 13px; color: var(--text2); }
@@ -249,12 +251,12 @@ body {
 const STORAGE_KEY = 'champions_academy_v2';
 
 const LEVELS = [
-  { name: 'Новичок',       icon: '🌱', min: 0,   max: 49   },
-  { name: 'Игрок команды', icon: '👟', min: 50,  max: 149  },
-  { name: 'Капитан',       icon: '🎖️', min: 150, max: 299  },
-  { name: 'Звезда лиги',  icon: '⭐', min: 300,  max: 499  },
-  { name: 'Чемпион',       icon: '🏆', min: 500, max: 799  },
-  { name: 'Легенда',       icon: '👑', min: 800, max: Infinity },
+  { name: 'Дворовый игрок',  icon: '⚽', min: 0,   max: 49,       subtitle: 'Гоняешь мяч во дворе и мечтаешь о большом поле' },
+  { name: 'Игрок академии',  icon: '🥅', min: 50,  max: 149,      subtitle: 'Тренируешься в спортшколе, тренер начинает тебя замечать' },
+  { name: 'Капитан юниоров', icon: '🎖️', min: 150, max: 299,      subtitle: 'Капитан юношеской команды, ведёшь её к победам' },
+  { name: 'Профессионал',    icon: '👕', min: 300, max: 499,      subtitle: 'Подписал контракт с клубом и играешь в лиге' },
+  { name: 'Звезда лиги',     icon: '⭐', min: 500, max: 799,      subtitle: 'Игрок топ-клуба, выигрываешь трофеи и медали' },
+  { name: 'Легенда футбола', icon: '👑', min: 800, max: Infinity, subtitle: 'Твоё имя знают болельщики по всему миру' },
 ];
 
 const CATEGORIES = {
@@ -493,6 +495,7 @@ function buildToday(child, pts, lv, lvIdx) {
   const heroCard = `<div class="hero-card">
     <div class="hero-name">${child.avatar} ${child.name}</div>
     <div class="hero-level">${lv.icon} ${lv.name}</div>
+    <div class="hero-level-sub">⚽ ${lv.subtitle}</div>
     <div class="hero-pts">
       <span class="hero-pts-num">${avail}</span>
       <span class="hero-pts-label">доступных очков</span>
@@ -541,7 +544,9 @@ function buildTaskRow(task, parentView) {
     checkEl  = `<button class="btn-check confirmed" disabled>✓</button>`;
     statusEl = `<span class="task-status status-confirmed">✅ Засчитано</span>`;
   } else if (task.markedDone) {
-    checkEl  = `<button class="btn-check done" disabled>✓</button>`;
+    checkEl  = parentView
+      ? `<button class="btn-check done" disabled>✓</button>`
+      : `<button class="btn-check done" onclick="unmarkDone(${task.id})" title="Отменить отметку">✓</button>`;
     statusEl = `<span class="task-status status-pending">⏳ Ждёт</span>`;
   } else {
     checkEl  = `<button class="btn-check" onclick="markDone(${task.id})">○</button>`;
@@ -625,9 +630,14 @@ function buildRewards(child, pts) {
   const lvPct = getLevelProgress(pts);
   const levelsHtml = LEVELS.map((lv,i) => {
     const unlocked = lvIdx >= i;
-    return `<div class="level-card">
+    const isCurrent = lvIdx === i;
+    return `<div class="level-card" style="${isCurrent?'background:rgba(74,222,128,.06);border-radius:8px;margin:0 -8px;padding:10px 8px':''}">
       <div class="level-icon" style="opacity:${unlocked?1:.3}">${lv.icon}</div>
-      <div class="level-info"><div class="level-name" style="color:${unlocked?'var(--text)':'var(--text3)'}">${lv.name}</div><div class="level-req">${lv.min===0?'Стартовый':'от '+lv.min+' очков'}</div></div>
+      <div class="level-info">
+        <div class="level-name" style="color:${unlocked?'var(--text)':'var(--text3)'}">${lv.name}${isCurrent?' <span style="color:var(--accent);font-size:11px">● ты здесь</span>':''}</div>
+        <div class="level-req">${lv.min===0?'Стартовый':'от '+lv.min+' очков'}</div>
+        <div class="level-subtitle">⚽ ${lv.subtitle}</div>
+      </div>
       <div>${unlocked?'✅':'🔒'}</div>
     </div>`;
   }).join('');
@@ -665,7 +675,8 @@ function buildRewards(child, pts) {
       }).join('');
 
   return `<div class="card">
-      <div class="card-title">🏆 Уровни</div>
+      <div class="card-title">🏆 Карьера футболиста</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Твой путь от дворового мяча до звезды мирового футбола ⚽</p>
       <div class="level-bar-wrap" style="margin-bottom:12px">
         <div class="level-bar-label"><span>${LEVELS[lvIdx].icon} ${LEVELS[lvIdx].name}</span><span>${lvPct}% до следующего</span></div>
         <div class="bar-track"><div class="bar-fill" style="width:${lvPct}%"></div></div>
@@ -1177,6 +1188,11 @@ function markDone(id) {
   if (task && !task.markedDone) { task.markedDone = true; saveState(); render(); showToast('⏳ Ждёт подтверждения родителя'); }
 }
 
+function unmarkDone(id) {
+  const task = activeChild().tasks.find(t=>t.id===id);
+  if (task && task.markedDone && !task.confirmed) { task.markedDone = false; saveState(); render(); showToast('↩️ Отметка снята'); }
+}
+
 function deleteTask(id) {
   const child = activeChild();
   child.tasks = child.tasks.filter(t=>t.id!==id);
@@ -1455,7 +1471,7 @@ Object.assign(window, {
   setTab, switchChild, selectChildParent, backToOverview,
   openPin, pinKey, exitParent, openChangePin, savePin,
   openAddTask, selectPts, toggleDay, setDaysPreset, saveTask,
-  markDone, deleteTask, confirmTask, confirmAllToday, confirmDay, openDayDetail,
+  markDone, unmarkDone, deleteTask, confirmTask, confirmAllToday, confirmDay, openDayDetail,
   openAddPrize, setPrizeType, toggleAlsoForChild, savePrize, deleteSharedPrize, deleteIndPrize, markGoalAchieved,
   openEditPrize, doEditPrize,
   openAddChild, openEditChild, selectAvatar, saveChild, saveEditChild,
